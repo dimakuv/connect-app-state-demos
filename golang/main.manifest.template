@@ -1,0 +1,30 @@
+# Copyright (C) 2024 Intel Labs
+# SPDX-License-Identifier: BSD-3-Clause
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "/main"
+
+loader.log_level = "{{ log_level }}"
+
+loader.env.RESTORE_FROM_FILE = { passthrough = true }
+
+loader.insecure__use_cmdline_argv = true
+
+fs.mounts = [
+  { path = "/main", uri = "file:main" },
+  { type = "encrypted", path = "/dump.enc.dat", uri = "file:dump.enc.dat", key_name = "_sgx_mrsigner" },
+]
+
+sys.enable_sigterm_injection = true
+
+sgx.enclave_size = "4G"
+sgx.max_threads = 32
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:main",
+]
+
+sgx.allowed_files = [
+  "file:dump.dat",
+]
